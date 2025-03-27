@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/addEdit.css' %}">
+
+<div class="back-button-box">
+    <a href="{{request.META.HTTP_REFERER}}" class="back-button">
+        <i class="fa fa-arrow-left"></i> Back
+    </a>
+</div>
+
+    <div class="main-box">
+        <h1>ADD / EDIT APERD</h1>
+        <hr>
+        <form action="" method="post" class="add-edit-item">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="child-box">
+                <label for="aperd-name">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="confirm-button">Confirm</button>
+        </form>
+    </div>
+{% endblock %}

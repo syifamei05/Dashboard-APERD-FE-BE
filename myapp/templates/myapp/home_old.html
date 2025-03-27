@@ -1,0 +1,448 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+}
+
+/* Navbar NEW */
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background: #0056b3;  /* Blue background */
+    padding: 10px 20px;
+    box-shadow: 0px 5px hsl(211, 99%, 27%);
+    margin-bottom: 30px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: auto;
+    height: 60px;
+}
+
+.title {
+    color: white;
+    font-size: 30px;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+.date {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.logout-button {
+    background: white;
+    color: #0056b3;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.logout-button i {
+    font-size: 14px;
+}
+
+.logout-button:hover {
+    background: #e0e0e0;
+    transition: 0.3s ease-in-out;
+}
+
+
+.dashboard {
+    margin: 50px;
+}
+
+/* Total APERD Section */
+.total-aperd {
+    background: #ffffff;
+    padding: 15px;
+    margin: 20px auto;
+    /* width: 90%; */
+    max-width: 1200px;
+    border-radius: 8px;
+    box-shadow: 3px 3px #d4d4d4;
+    display: flex;
+
+}
+
+/* APERD List */
+.aperd-box {
+    background: #ffffff;
+    padding: 25px;
+    max-width: 1200px;
+    margin: auto;
+    box-shadow: 3px 3px #d4d4d4;
+    max-height: 500px;
+}
+
+.header-aperd-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .right-side-aperd-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        a {
+            text-decoration: none;
+            
+            .add-button {
+                background:#91b6de;
+                color: #000;
+                padding: 5px;
+                border-radius: 3px;
+                border-color: #000;
+                border-width: 0.5px;
+                border-style:outset;
+                align-items: center;
+                text-align: center;
+                
+            }
+
+            .add-button:hover {
+                background:#4f6276;
+                color: #f1fbf1;
+                transition: 0.25s ease-in-out;
+            }
+        }
+        
+    }
+}
+
+/* APERD LIST */
+.list {
+    list-style: none; /* Removes default list bullets */
+    padding: 0;
+    margin: 15px 0;
+    max-height: 350px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.list li {
+    background: #f8fbe8; /* Light background color */
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 3px 3px whitesmoke;
+    display: flex;
+    justify-content: space-between;
+}
+
+.list li:hover {
+    background: #e0e7c0; /* Slightly darker background on hover */
+}
+
+.button {
+
+    #edit-button {
+        background-color:#9dc79f;
+        padding: 2px;
+        border-radius: 3px;
+        border-width: 1.5px;
+    }
+
+    #delete-button {
+        background-color: rgb(252, 166, 166);
+        padding: 2px;
+        border-radius: 3px;
+        border-width: 1.5px;
+    }
+
+    a {
+        color: #000;
+        text-decoration: none;
+    }
+}
+
+
+.list-item {
+    text-decoration: none; /* Removes underline */
+    color: black; /* Changes text color to black */
+    display: block;
+}
+
+/* Summary Cards OLD VERSION */
+.summary {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    margin: auto;
+}
+
+.card {
+    background: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 5px;
+    box-shadow: 3px 3px #d4d4d4;
+    flex: 1;
+    text-align: center;
+    /* min-width: 150px; */
+}
+
+/* Chart Section NEW VERSION */
+.chart-container {
+    display: flex;
+    justify-content: center; /* Centers charts horizontally */
+    align-items: stretch; /* Makes both charts the same height */
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.chart {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 3px 3px #d4d4d4;
+    flex: 1; /* Ensures equal width */
+    min-width: 500px; /* Prevents charts from being too small */
+    height: 350px; /* Ensures both charts are the same height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+
+/* Chart Section OLD VERSION*/
+/* .chart-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.chart {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 3px 3px #d4d4d4;
+    flex: 1;
+    max-width: 800px;
+    height: 300px;
+} */
+
+.login-page {
+    background: #c8e6c9;
+    justify-content: space-around;
+    align-items: center;
+    margin: 50px;
+    padding: 20px;
+    border-radius: 3%;
+    box-shadow: 7px 7px 0px 0px #a2c0a38e;
+}
+</style>
+
+<div class="dashboard">
+    <section class="total-aperd">
+        <strong>Total APERD : </strong><p>{{ aperd_count }}</p>
+    </section>
+    
+    <section class="aperd-box">
+        <div class="header-aperd-box">
+            <h2>Aperd List</h2>
+            <div class="right-side-aperd-box">
+                <div class="input-card">
+                    <input type="text" id="input-box">
+                    <button type="submit">Search <i class="fa fa-search"></i></button>
+                </div>
+                <a href="">
+                    <div class="add-button" href="{% url 'aperd' %}">
+                        Add New APERD
+                        <i class="fa fa-plus"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="body-aperd-box">
+            <ul class="list">
+                {% for aperd in aperds %}
+                <li>
+                    <a href="" class="list-item">{{ aperd.name }}</a>
+                    <div class="button">
+                        <button type="submit" id="edit-button"><a href="">Edit <i class="fa fa-pencil"></i></a></button>
+                        <button type="submit" id="delete-button">Delete <i class="fa fa-trash"></i></button>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+        
+        <div class="summary">
+            <div class="card">Total AUM<br><strong>Rp 12,750,000,000</strong></div>
+            <div class="card">Total NOA<br><strong>7,500 accounts</strong></div>
+        </div>
+        
+        <!-- Two Bar Chart: Total AUM and Total NOA -->
+        <section class="chart-container">
+            <div class="chart">
+                <canvas id="barChartAUM"></canvas>
+            </div>
+            <div class="chart">
+                <canvas id="barChartNOA"></canvas>
+            </div>
+        </section>
+    </div>
+
+<!-- 2.0 -->
+
+    <div class="dashboard">
+        <section class="total-aperd">
+            <strong>Total APERD : </strong><p>{{ aperd_count }}</p>
+        </section>
+        
+        <section class="main-box">
+            <div class="header-main-box">
+                <div class="left-header">
+                    <h1>APERD Lists</h1>
+                </div>
+                <div class="right-side-main-box">
+                    <form action="" method="get" name="q" class="search-wrapper">
+                        <input type="text" id="input-box" placeholder="Search..." name="q">
+                        <button type="submit">Search</button>
+                    </form>
+                    <a href="addEditAperd.html">
+                        <button class="add-button">Add New APERD <i class="fa fa-plus"></i></button>
+                    </a>
+                </div>
+            </div>
+            <div class="body-main-box">
+                <ul class="list">
+                    {% for aperd in aperds %}
+                    <li>
+                        <a href="{% url 'aperd' aperd.id %}" class="list-item">{{ aperd.name }}</a>
+                        <div class="button">
+                            <button type="submit" id="edit-button"><a href="">Edit <i class="fa fa-pencil"></i></a></button>
+                            <button type="submit" id="delete-button">Delete <i class="fa fa-trash"></i></button>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <a href="{% url 'home' %}">
+                <button type="submit" class="show-all-button">Show All</button>
+            </a>
+        </section>
+        
+        <div class="summary">
+            <div class="card">Total AUM<br><strong>Rp 12,750,000,000</strong></div>
+            <div class="card">Total NOA<br><strong>7,500 accounts</strong></div>
+        </div>
+        
+        <!-- Two Bar Chart: Total AUM and Total NOA -->
+        <section class="chart-container">
+            <div class="chart">
+                <canvas id="barChartAUM"></canvas>
+            </div>
+            <div class="chart">
+                <canvas id="barChartNOA"></canvas>
+            </div>
+        </section>
+    </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Total AUM Chart
+        var ctxAUM = document.getElementById("barChartAUM").getContext("2d");
+        var barChartAUM = new Chart(ctxAUM, {
+            type: "bar",
+            data: {
+                labels: ["Bareksa", "MNC Sekuritas", "IPOT", "Bank DBS", "AJAIB", "INVESNOW"],
+                datasets: [
+                    {
+                        label: "Total AUM (Rp)",
+                        data: [535188996, 6027186088, 1279968236, 4091320561, 502844166, 1313491953],
+                        backgroundColor: "rgba(54, 162, 235, 0.6)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{  // ✅ Ensure this is inside an array
+                        ticks: {
+                            beginAtZero: true, // ✅ Forces the Y-axis to start from zero
+                        },
+                    }],
+                },
+            },
+        });
+
+        // Total NOA Chart
+        var ctxNOA = document.getElementById("barChartNOA").getContext("2d");
+        var barChartNOA = new Chart(ctxNOA, {
+            type: "bar",
+            data: {
+                labels: ["Bareksa", "MNC Sekuritas", "IPOT", "Bank DBS", "AJAIB", "INVESNOW"],
+                datasets: [
+                    {
+                        label: "Total NOA (Accounts)",
+                        data: [1245, 982, 1603, 890, 1429, 1351],
+                        backgroundColor: "rgba(153, 102, 255, 0.6)",
+                        borderColor: "rgba(153, 102, 255, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{  // ✅ Corrected this part
+                        ticks: {
+                            beginAtZero: true, // ✅ Ensures numbers start from zero
+                        },
+                    }],
+                },
+            },
+        });
+    });
+</script>
+{% endblock %}

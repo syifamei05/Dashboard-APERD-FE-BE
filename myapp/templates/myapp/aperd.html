@@ -1,0 +1,213 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load tz %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/item.css' %}">
+
+<div class="back-button-box">
+    <a href="{% url 'home' %}" class="back-button">
+        <i class="fa fa-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="main-box">
+    <h1>{{ aperd.name }}</h1>
+    <hr>
+    <div class="child-box">
+        <label for="aperd-name">APERD Name</label>
+        <span>{{ aperd.name }}</span>
+    </div>
+
+    <div class="child-box">
+        <label for="pic">PIC</label>
+        <span>{{ aperd.pic }}</span>
+    </div>
+
+    <div class="child-box">
+        <label for="progress">Progress</label>
+        <span>{{ aperd.progress }}</span>
+    </div>
+
+    <div class="child-box">
+        <label for="desc">Description</label>
+        <span>{{ aperd.desc }}</span>
+    </div>
+
+    <div class="child-box">
+        <label for="desc">Created</label>
+        <span>{{ aperd.created|timezone:"Asia/Jakarta" }}</span>
+    </div>
+
+    <div class="child-box">
+        <label for="desc">Last Updated</label>
+        <span>{{ aperd.updated|timezone:"Asia/Jakarta" }}</span>
+    </div>
+
+    <button type="submit" id="edit-main-button">
+        <a href="{% url 'edit-aperd' aperd.id %}">Edit</a>
+    </button>
+    <button type="submit" id="delete-main-button">
+        <a href="{% url 'delete-aperd' aperd.id %}">Delete</a>
+    </button>
+</div>
+
+<div class="chart-box">
+    <div class="chart-controls">
+        <form method="get" class="filter-form">
+            <select name="view_type" class="form-select">
+                <option value="year" {% if view_type == 'year' %}selected{% endif %}>Yearly</option>
+                <option value="month" {% if view_type == 'month' %}selected{% endif %}>Monthly</option>
+            </select>
+            <select name="time_range" class="form-select">
+                <option value="1" {% if time_range == '1' %}selected{% endif %}>Last Year</option>
+                <option value="5" {% if time_range == '5' %}selected{% endif %}>Last 5 Years</option>
+                <option value="all" {% if time_range == 'all' %}selected{% endif %}>All Time</option>
+            </select>
+            <button type="submit" class="filter-button">Apply Filter</button>
+        </form>
+    </div>
+
+    <section class="chart-container">
+        <div class="chart">
+            <h3>Total Asset Under Management (AUM)</h3>
+            <canvas id="totalAUM"></canvas>
+        </div>
+        <div class="chart">
+            <h3>Total Number of Accounts (NOA)</h3>
+            <canvas id="totalNOA"></canvas>
+        </div>
+    </section>
+</div>
+
+<section class="main-box">
+    <div class="header-main-box">
+        <div class="left-header">
+            <h1>Product Lists</h1>
+        </div>
+
+        <div class="right-side-main-box">
+            <form class="search-wrapper" method="get" action="" name="q">
+                <input type="text" id="input-box" placeholder="Search..." name="q">
+                <button type="submit">Search</button>
+            </form>
+            <a href="{% url 'add-product' %}">
+                <button class="add-button">Add New Product <i class="fa fa-plus"></i></button>
+            </a>
+        </div>
+    </div>
+    <div class="body-main-box">
+        <ul class="list">
+            {% for product in products %}
+            <li>
+                <a href="{% url 'product' product.id %}" class="list-item">{{ product.name }}</a>
+                <div class="button">
+                    <button type="submit" id="edit-button"><a href="{% url 'edit-product' product.id %}">Edit <i class="fa fa-pencil"></i></a></button>
+                    <button type="submit" id="delete-button"><a href="{% url 'delete-product' product.id %}">Delete <i class="fa fa-trash"></i></a></a></button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    
+    <a href="{% url 'aperd' aperd.id %}">
+        <button type="submit" class="show-all-button">Show All</button>
+    </a>
+</section>
+
+<!-- Add Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const chartData = {{ chart_data|safe }};
+
+    // Total AUM Chart
+    const aumCtx = document.getElementById('totalAUM').getContext('2d');
+    new Chart(aumCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Total AUM (in IDR)',
+                data: chartData.aum_values,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            }).format(value);
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            }).format(context.parsed.y);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Total NOA Chart
+    const noaCtx = document.getElementById('totalNOA').getContext('2d');
+    new Chart(noaCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Total Number of Accounts',
+                data: chartData.noa_values,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y.toLocaleString('id-ID') + ' accounts';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

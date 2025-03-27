@@ -1,0 +1,178 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+<div class="dashboard">
+    <section class="total-aperd">
+        <strong>Total APERD : </strong><p>{{ aperd_count }}</p>
+    </section>
+    
+    <section class="main-box">
+        <div class="header-main-box">
+            <div class="left-header">
+                <h1>APERD Lists</h1>
+            </div>
+
+            <div class="right-side-main-box">
+                <form class="search-wrapper" method="get" action="" name="q">
+                    <input type="text" id="input-box" placeholder="Search..." name="q">
+                    <button type="submit">Search</button>
+                </form>
+                <a href="{% url 'add-aperd' %}">
+                    <button class="add-button">Add New APERD <i class="fa fa-plus"></i></button>
+                </a>
+            </div>
+        </div>
+        <div class="body-main-box">
+            <ul class="list">
+                {% for aperd in aperds %}
+                <li>
+                    <a href="{% url 'aperd' aperd.id %}" class="list-item">{{ aperd.name }}</a>
+                    <div class="button">
+                        <button type="submit" id="edit-button"><a href="{% url 'edit-aperd' aperd.id %}">Edit <i class="fa fa-pencil"></i></a></button>
+                        <button type="submit" id="delete-button"><a href="{% url 'delete-aperd' aperd.id %}">Delete <i class="fa fa-trash"></i></a></a></button>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        
+        <a href="{% url 'home' %}">
+            <button type="submit" class="show-all-button">Show All</button>
+        </a>
+    </section>
+    
+    <div class="summary">
+        <div class="card">
+            Total AUM<br>
+            <strong>Rp {{ total_aum }}</strong>
+        </div>
+        <div class="card">
+            Total NOA<br>
+            <strong>{{ total_noa }} accounts</strong>
+        </div>
+    </div>
+    
+
+    <div class="chart-box">
+        <section class="chart-container">
+            <div class="chart">
+                <canvas id="totalAUM"></canvas>
+            </div>
+            <div class="chart">
+                <canvas id="totalNOA"></canvas>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Add Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const chartData = {{ chart_data|safe }};
+
+    // Total AUM Chart
+    const aumCtx = document.getElementById('totalAUM').getContext('2d');
+    new Chart(aumCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Total AUM (in IDR)',
+                data: chartData.aum_values,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            }).format(value);
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            }).format(context.parsed.y);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Total NOA Chart
+    const noaCtx = document.getElementById('totalNOA').getContext('2d');
+    new Chart(noaCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Total Number of Accounts',
+                data: chartData.noa_values,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y.toLocaleString('id-ID') + ' accounts';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock content %}
